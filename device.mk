@@ -272,10 +272,11 @@ PRODUCT_PACKAGES += \
 
 # Thermal
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/thermal-engine-victara.conf:system/etc/thermal-engine-victara.conf
+    $(LOCAL_PATH)/configs/thermanager.xml:system/etc/thermanager.xml
 
+# thermanager
 PRODUCT_PACKAGES += \
-    libshims_thermal
+    thermanager
 
 # Torch
 PRODUCT_PACKAGES += \
