@@ -86,6 +86,7 @@ TARGET_USES_C2D_COMPOSITION := true
 TARGET_USES_ION := true
 USE_OPENGL_RENDERER := true
 OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 
 # Shader cache config options
 # Maximum size of the  GLES Shaders that can be cached for reuse.
