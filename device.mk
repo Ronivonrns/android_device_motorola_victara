@@ -158,6 +158,10 @@ PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl \
     keystore.msm8974
 
+# Gatekeeper HAL
+PRODUCT_PACKAGES += \
+    android.hardware.gatekeeper@1.0-impl
+
 # Lights
 PRODUCT_PACKAGES += \
     android.hardware.light@2.0-impl \
