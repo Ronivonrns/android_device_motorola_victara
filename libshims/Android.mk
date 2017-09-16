@@ -22,27 +22,17 @@ LOCAL_MODULE_TAGS := optional
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := SensorManager.cpp moto_camera_misc.c
-LOCAL_SHARED_LIBRARIES := libutils libgui liblog libbinder
-LOCAL_MODULE := libshim_camera
-LOCAL_MODULE_TAGS := optional
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-
 LOCAL_SRC_FILES := atomic.cpp
-
 LOCAL_MODULE := libshims_atomic
 LOCAL_MODULE_TAGS := optional
 LOCAL_SHARED_LIBRARIES := liblog
-
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-
 LOCAL_SRC_FILES := \
     sensorlistener/ISensorServer.cpp \
-    sensorlistener/SensorManager.cpp
+    sensorlistener/SensorManager.cpp \
+    sensorlistener/moto_camera_misc.c
 
 LOCAL_MODULE := libshims_sensorlistener
 LOCAL_MODULE_TAGS := optional
@@ -57,6 +47,7 @@ LOCAL_SHARED_LIBRARIES := \
     libutils \
     liblog \
     libbase \
+    libgui \
     libsensor
 
 include $(BUILD_SHARED_LIBRARY)
