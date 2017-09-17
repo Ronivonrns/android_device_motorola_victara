@@ -209,7 +209,9 @@ PRODUCT_PACKAGES += \
     nfc_nci.bcm2079x.default \
     NfcNci \
     Tag \
-    com.android.nfc_extras
+    com.android.nfc_extras \
+    android.hardware.nfc@1.0-impl
+    
 
 PRODUCT_COPY_FILES += \
     device/motorola/victara/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
