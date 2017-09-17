@@ -153,6 +153,10 @@ PRODUCT_PACKAGES += \
     hwcomposer.msm8974 \
     libgenlock \
     memtrack.msm8974
+    
+# Memtrack HAL
+PRODUCT_PACKAGES += \
+    android.hardware.memtrack@1.0-impl
 
 # GNSS HAL
 PRODUCT_PACKAGES += \
