@@ -26,12 +26,18 @@
 #define LOG_TAG "CameraWrapper"
 #include <cutils/log.h>
 
+#include <android-base/properties.h>
 #include <utils/threads.h>
 #include <utils/String8.h>
 #include <hardware/hardware.h>
 #include <hardware/camera.h>
 #include <camera/Camera.h>
 #include <camera/CameraParameters.h>
+
+#define BACK_CAMERA     0
+#define FRONT_CAMERA    1
+
+using android::base::GetProperty;
 
 #define UNUSED __attribute__((unused))
 
