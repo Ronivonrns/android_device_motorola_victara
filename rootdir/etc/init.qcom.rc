@@ -26,7 +26,7 @@
 #
 
 # use init.mmi.usb.rc
-#import init.qcom.usb.rc
+import init.recovery.qcom.rc
 import init.target.rc
 
 on early-init
@@ -34,7 +34,7 @@ on early-init
     chown system graphics /sys/devices/virtual/graphics/fb0/idle_time
 
 on init
-    export LD_SHIM_LIBS /system/bin/thermal-engine|libshims_thermal.so:/system/lib/libjustshoot.so|libshims_sensorlistener.so:/system/lib/libjscore.so|libshims_sensorlistener.so:/system/lib/libmot_sensorlistener.so|libshims_sensorlistener.so:/system/bin/mpdecision|libshims_atomic.so
+    export LD_SHIM_LIBS /system/lib/libjustshoot.so|libshims_sensorlistener.so:/system/lib/libjscore.so|libshims_sensorlistener.so:/system/lib/libmot_sensorlistener.so|libshims_sensorlistener.so:/system/bin/mpdecision|libshims_atomic.so
 
 
     # Set permissions for persist partition
@@ -214,6 +214,9 @@ on post-fs-data
     mkdir /data/system 0775 system system
     #symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
+    # Wifi firmware reload path
+    chown wifi wifi /sys/module/wlan/parameters/fwpath
+
     #Create directories for gpsone_daemon services
     mkdir /data/misc/gpsone_d 0770 system gps
 
@@ -351,47 +354,6 @@ on property:bluetooth.hciattach=true
 on property:bluetooth.hciattach=false
     setprop bluetooth.status off
 
-# Service not used
-#service hciattach_ath3k /system/bin/sh /system/etc/init.ath3k.bt.sh
-#     class late_start
-#     user bluetooth
-#     group system bluetooth net_bt_admin misc
-#     disabled
-#     oneshot
-
-# Service not used
-#service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
-#    class late_start
-#    user bluetooth
-#    group bluetooth net_bt_admin inet
-#    disabled
-#    oneshot
-
-#service bt-sap /system/bin/sapd 15
-#    user bluetooth
-#    group bluetooth net_bt_admin
-#    class late_start
-#    disabled
-#    oneshot
-
-#service bridgemgrd /system/bin/bridgemgrd
-#    class late_start
-#    user radio
-#    group radio qcom_diag
-#    disabled
-
-#service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
-#    class late_start
-#    user system
-#    group system inet
-#    disabled
-
-#service qmiproxy /system/bin/qmiproxy
-#    class main
-#    user radio
-#    group radio qcom_diag
-#    disabled
-
 # QMUX must be in multiple groups to support external process connections
 service qmuxd /system/bin/qmuxd
     class main
@@ -403,13 +365,6 @@ service netmgrd /system/bin/netmgrd
     user root
     group root wifi wakelock radio inet
 
-# Service not used
-#service sensors /system/bin/sensors.qcom
-#    class late_start
-#    user root
-#    group root
-#    disabled
-
 on property:ro.use_data_netmgrd=false
     # netmgr not supported on specific target
     stop netmgrd
@@ -418,25 +373,6 @@ on property:ro.use_data_netmgrd=false
 # but only if ro.data.large_tcp_window_size property is set.
 on property:ro.data.large_tcp_window_size=true
     write /proc/sys/net/ipv4/tcp_adv_win_scale  1
-
-# Service not used
-#service amp_init /system/bin/amploader -i
-#    class late_start
-#    user root
-#    disabled
-#    oneshot
-#
-#service amp_load /system/bin/amploader -l 7000
-#    class late_start
-#    user root
-#    disabled
-#    oneshot
-#
-#service amp_unload /system/bin/amploader -u
-#    class late_start
-#    user root
-#    disabled
-#    oneshot
 
 # WPA
 service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
@@ -461,12 +397,6 @@ service gpsone_daemon /system/bin/gpsone_daemon
     group gps inet net_raw
     disabled
 
-#service quipc_main /system/bin/quipc_main
-#    class late_start
-#    user gps
-#    group gps net_admin wifi inet qcom_diag
-#    disabled
-
 service location_mq /system/bin/location-mq
     class late_start
     user gps
@@ -485,12 +415,6 @@ service xtwifi_client /system/bin/xtwifi-client
     group net_admin wifi inet gps
     disabled
 
-#service lowi-server /system/bin/lowi-server
-#   class late_start
-#   user gps
-#   group gps net_admin wifi inet qcom_diag
-#   disabled
-
 service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
     class late_start
     user root
@@ -506,157 +430,19 @@ on property:crypto.driver.load=0
      exec /system/bin/rmmod qcedev.ko
      exec /system/bin/rmmod qce.ko
 
-# Service not used
-#service drmdiag /system/bin/drmdiagapp
-#    class late_start
-#     user root
-#     disabled
-#     oneshot
-#
-#on property:drmdiag.load=1
-#    start drmdiag
-#
-#on property:drmdiag.load=0
-#    stop drmdiag
-
 service qcom-sh /system/bin/sh /init.qcom.sh
     class late_start
     user root
     oneshot
-
-on enable-low-power
-    write /sys/module/lpm_levels/enable_low_power/l2 4
-    write /sys/module/msm_pm/modes/cpu0/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu0/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/standalone_power_collapse/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu0/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/retention/idle_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/retention/idle_enabled 1
-    write /sys/module/msm_show_resume_irq/parameters/debug_mask 1
-    write /sys/module/msm_thermal/core_control/enabled 0
-    write /sys/devices/system/cpu/cpu1/online 1
-    write /sys/devices/system/cpu/cpu2/online 1
-    write /sys/devices/system/cpu/cpu3/online 1
-    write /sys/class/devfreq/qcom,cpubw.41/governor cpubw_hwmon
-
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor interactive
-    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor interactive
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_slack
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_slack
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/target_loads
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/target_loads
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boost
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
-    chmod 0220 /sys/devices/system/cpu/cpufreq/interactive/boostpulse
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/target_load
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/target_load
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/sync_freq
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/sync_freq
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_freq
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_freq
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_load
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_load
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor
-    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor
-    chown system system /dev/cpuctl/cpu.notify_on_migrate
-    chmod 0660 /dev/cpuctl/cpu.notify_on_migrate
-    chown system system /sys/module/cpu_boost/parameters/boost_ms
-    chmod 0660 /sys/module/cpu_boost/parameters/boost_ms
-    chown system system /sys/module/cpu_boost/parameters/sync_threshold
-    chmod 0660 /sys/module/cpu_boost/parameters/sync_threshold
-
-    # Interative governor
-
-    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay "20000 1400000:40000 1700000:20000"
-    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
-    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1190400
-    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1
-    write /sys/devices/system/cpu/cpufreq/interactive/target_loads "85 1500000:90 1800000:70"
-    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 30000
-    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 100000
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 30000
-    write /dev/cpuctl/cpu.notify_on_migrate 1
-
-    # CPU Boost driver
-
-    write /sys/module/cpu_boost/parameters/boost_ms 20
-    write /sys/module/cpu_boost/parameters/sync_threshold 1728000
-    write /sys/module/cpu_boost/parameters/input_boost_freq 1497600
-    write /sys/module/cpu_boost/parameters/input_boost_ms 40
-
-    # mpdecision
-    setprop ro.qualcomm.perf.cores_online 2
-    rm /data/system/default_values
-    start mpdecision
-
-    # Wifi firmware reload path
-    chown wifi wifi /sys/module/wlan/parameters/fwpath
 
 service atfwd /system/bin/ATFWD-daemon
     class late_start
     user system
     group system radio
 
-#service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
-#    class late_start
-#    group radio wifi inet
-#    disabled
-#    oneshot
-
-#on property:persist.data.ds_fmc_app.mode=1
-#    start ds_fmc_appd
-
-#service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
-#    class late_start
-#    group net_bt_admin inet radio wifi
-#    disabled
-
-#on property:persist.ims.regmanager.mode=1
-#    start ims_regmanager
-
 on property:ro.data.large_tcp_window_size=true
     # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
     write /proc/sys/net/ipv4/tcp_adv_win_scale  1
-
-# Service not used
-#service battery_monitor /system/bin/battery_monitor
-#    user system
-#    group system
-#    disabled
 
 service ril-daemon1 /vendor/bin/hw/rild -c 2
     class main
@@ -665,28 +451,9 @@ service ril-daemon1 /vendor/bin/hw/rild -c 2
     capabilities BLOCK_SUSPEND NET_ADMIN NET_RAW
     disabled
 
-# Service not used
-#service profiler_daemon /system/bin/profiler_daemon
-#    class late_start
-#    user root
-#    group root
-#    disabled
-
-# Service not used
-#service hcidump /system/bin/sh /system/etc/hcidump.sh
-#    user bluetooth
-#    group bluetooth system net_bt_admin net_admin
-#    disabled
-#    oneshot
-
 service charger /charger
     class charger
     seclabel u:r:charger:s0
-
-#service ssr_diag /system/bin/ssr_diag
-#    class late_start
-#    user system
-#    group system
 
 # SSR setting
 on property:persist.sys.ssr.restart_level=*
@@ -695,56 +462,3 @@ on property:persist.sys.ssr.restart_level=*
 on property:persist.sys.qc.sub.ssr.max=*
     write /sys/module/subsystem_restart/parameters/max_restarts ${persist.sys.qc.sub.ssr.max}
     write /sys/module/subsystem_restart/parameters/max_history_time 900
-
-# Service not used
-# Define fastmmi
-#service fastmmi /system/bin/mmi
-#    user root
-#    group root
-#    disabled
-
-# Service not used
-#service fastmmisrv /system/bin/sh /init.qcom.factory.sh
-#    user root
-#    disabled
-#    oneshot
-#
-#on ffbm
-#    start fastmmisrv
-
-# moto: charger_monitor does not exist
-#service charger_monitor /system/bin/charger_monitor
-#    user system
-#    group system
-#    disabled
-
-# MOT Security Asset CR IKJBMR2-6392
-#service diag_mdlog_start /system/bin/diag_mdlog
-#    class late_start
-#    user sdcard_rw
-#    group system qcom_diag sdcard_rw sdcard_r media_rw
-#    disabled
-#    oneshot
-
-#service diag_mdlog_stop /system/bin/diag_mdlog -k
-#    class late_start
-#    user sdcard_rw
-#    group system qcom_diag sdcard_rw sdcard_r media_rw
-#    disabled
-#    oneshot
-
-#service qlogd /system/xbin/qlogd
-#    class main
-#    disabled
-#on property:persist.sys.qlogd=1
-#    start qlogd
-#on property:persist.sys.qlogd=0
-#    stop qlogd
-
-#service rootagent /system/bin/sh /system/etc/init.qcom.rootagent.sh
-#    disabled
-#    oneshot
-#on property:persist.sys.rootagent=1
-#    start rootagent
-#on property:persist.sys.rootagent=0
-#    stop rootagent
