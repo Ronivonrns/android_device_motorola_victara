@@ -23,6 +23,9 @@ BOARD_VENDOR := motorola-qcom
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
+# jemalloc
+MALLOC_SVELTE := true
+
 # Assert
 TARGET_OTA_ASSERT_DEVICE := victara
 
