@@ -127,9 +127,7 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     camera.device@3.2-impl \
     camera.msm8974 \
-    libshims_sensorlistener \
-    Camera2
-
+    libshims_sensorlistener
 # CRDA
 PRODUCT_PACKAGES += \
     crda \
