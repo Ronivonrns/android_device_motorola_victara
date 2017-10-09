@@ -11,11 +11,17 @@ persist.audio.fluence.voicerec=false
 ro.config.vc_call_vol_steps=7
 ro.qc.sdk.audio.fluencetype=fluence
 use.voice.path.for.pcm.voip=true
+af.resampler.quality=7
+persist.audio.dualmic.config=endfire
 # FM maximum volume be between 0 and 8192 (0dB)
 ro.audio.fm_max_volume=5793
 
 # Bluetooth
 qcom.bluetooth.soc=smd
+ro.bluetooth.dun=true 
+ro.bluetooth.hfp.ver=1.6
+ro.bluetooth.sap=true
+ro.qualcomm.bt.hci_transport=smd
 
 # Camera
 camera2.portability.force_api=1
@@ -26,12 +32,18 @@ media.stagefright.less-secure=true
 persist.mot.gps.smart_battery=1
 
 # Graphics
+debug.egl.hw=1
+debug.sf.hw=1
+debug.mdpcomp.logs=0
+debug.composition.type=c2d
 debug.hwui.use_buffer_age=false
+dev.pm.dyn_samplingrate=1
 persist.hwc.mdpcomp.enable=true
-ro.hdmi.enable=true
 ro.opengles.version=196608
 ro.qualcomm.cabl=0
 ro.sf.lcd_density=480
+
+# treble
 persist.media.treble_omx=false
 camera.disable_treble=true
 
@@ -65,8 +77,9 @@ ril.subscription.types=NV,RUIM
 ro.data.large_tcp_window_size=true
 ro.use_data_netmgrd=true
 
-# Time services
-persist.timed.enable=true
+# NFC
+debug.nfc.fw_download=true
+debug.nfc.fw_boot_download=false
 
 # Storage
 ro.sys.sdcardfs=false
