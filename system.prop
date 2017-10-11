@@ -92,3 +92,4 @@ ro.disableWifiApFirmwareReload=true
 ro.hw.device=victara
 # Play store
 ro.com.google.clientidbase.gmm=android-motorola
+
