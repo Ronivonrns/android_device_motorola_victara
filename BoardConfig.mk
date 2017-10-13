@@ -23,6 +23,9 @@ BOARD_VENDOR := motorola-qcom
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
+# Enable real time lockscreen charging current values
+BOARD_GLOBAL_CFLAGS += -DBATTERY_REAL_INFO
+
 # Assert
 TARGET_OTA_ASSERT_DEVICE := victara
 
