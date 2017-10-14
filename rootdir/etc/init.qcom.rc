@@ -397,7 +397,7 @@ service gpsone_daemon /vendor/bin/gpsone_daemon
     group gps inet net_raw
     disabled
 
-service location_mq /vendor/bin/location-mq
+service location_mq /system/bin/location-mq
     class late_start
     user gps
     group gps
